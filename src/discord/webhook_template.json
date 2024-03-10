@@ -1,0 +1,35 @@
+{
+  "content": null,
+  "embeds": [
+    {
+      "title": "Bundle Name",
+      "url": "https://humblebundle.com",
+      "color": 13051437,
+      "fields": [
+        {
+          "name": "Sales",
+          "value": "12345"
+        },
+        {
+          "name": "Started At",
+          "value": "<t:0000000000:f>",
+          "inline": true
+        },
+        {
+          "name": "Ends In",
+          "value": "<t:0000000000:R>",
+          "inline": true
+        }
+      ],
+      "footer": {
+        "text": "Bot Created By https://github.com/Xientraa"
+      },
+      "image": {
+        "url": ""
+      }
+    }
+  ],
+  "username": "Humble Bundle (Unofficial)",
+  "avatar_url": "https://raw.githubusercontent.com/Xientraa/Discord-Humble-Bundle-Notifications/main/assets/humble-bundle-icon.png",
+  "attachments": []
+}
