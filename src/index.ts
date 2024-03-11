@@ -168,4 +168,4 @@ function schedule() {
 }
 
 schedule();
-setInterval(schedule, 3600000);
+setInterval(schedule, env.TRIGGER_INTERVAL || 3600000);

@@ -9,6 +9,7 @@ declare global {
             SOFTWARE_BUNDLE_WEBHOOK_PATH: string;
             CHOICE_USERNAME: string;
             CHOICE_WEBHOOK_PATH: string;
+            TRIGGER_INTERVAL: number | undefined;
         }
     }
 }
