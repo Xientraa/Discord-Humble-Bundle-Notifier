@@ -59,7 +59,13 @@ export function getActiveBundlesJSON(): Promise<LandingPageJSON> {
             });
 
             res.on("end", () => {
-                const dom = new JSDOM(Buffer.concat(data).toString());
+                const dom = new JSDOM(
+                    Buffer.concat(data).toString().replaceAll(
+                        // Silence "Error: Could not parse CSS stylesheet"
+                        new RegExp("<style.*?>([^]*?)</style>", "g"),
+                        "",
+                    ),
+                );
                 const data_element = dom.window.document.querySelector(
                     'script[id="landingPage-json-data"]',
                 );
