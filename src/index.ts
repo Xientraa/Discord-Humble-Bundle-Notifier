@@ -53,15 +53,19 @@ function schedule() {
     getActiveBundlesJSON().then((response) => {
         for (const bundle_type of Object.keys(response.data)) {
             let webhook_path = "";
+            let username = "";
             switch (bundle_type) {
                 case "games":
                     webhook_path = env.GAME_BUNDLE_WEBHOOK_PATH;
+                    username = env.GAME_BUNDLE_USERNAME;
                     break;
                 case "books":
                     webhook_path = env.BOOK_BUNDLE_WEBHOOK_PATH;
+                    username = env.BOOK_BUNDLE_USERNAME;
                     break;
                 case "software":
                     webhook_path = env.SOFTWARE_BUNDLE_WEBHOOK_PATH;
+                    username = env.SOFTWARE_BUNDLE_USERNAME;
                     break;
             }
 
@@ -97,6 +101,7 @@ function schedule() {
                         ] = createTimestampIndicator(product_end_time, "R");
                         modified_webhook_template.embeds[0].image.url =
                             product_json.high_res_tile_image;
+                        modified_webhook_template.username = username;
 
                         sendWebhook(webhook_path, modified_webhook_template)
                             .then(() => {
@@ -138,6 +143,7 @@ function schedule() {
                 createTimestampIndicator(json.offers.validThrough, "R");
             modified_webhook_template.embeds[0].image.url =
                 json.image.replaceAll("&amp;", "&");
+            modified_webhook_template.username = env.CHOICE_USERNAME;
 
             sendWebhook(env.CHOICE_WEBHOOK_PATH, modified_webhook_template)
                 .then(() => {
