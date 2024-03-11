@@ -3,13 +3,10 @@
   "embeds": [
     {
       "title": "Bundle Name",
+      "description": "Bundle Description",
       "url": "https://humblebundle.com",
       "color": 13051437,
       "fields": [
-        {
-          "name": "Sales",
-          "value": "12345"
-        },
         {
           "name": "Started At",
           "value": "<t:0000000000:f>",
@@ -18,6 +15,11 @@
         {
           "name": "Ends In",
           "value": "<t:0000000000:R>",
+          "inline": true
+        },
+        {
+          "name": "Sales",
+          "value": "12345",
           "inline": true
         }
       ],

@@ -88,17 +88,19 @@ function schedule() {
                         const modified_webhook_template = webhook_template;
                         modified_webhook_template.embeds[0].title =
                             product_json.tile_name;
+                        modified_webhook_template.embeds[0].description =
+                            product_json.short_marketing_blurb;
                         modified_webhook_template.embeds[0].url =
                             "https://humblebundle.com" + product_url;
                         modified_webhook_template.embeds[0]["fields"][0][
                             "value"
-                        ] = String(product_json["bundles_sold|decimal"]);
+                        ] = createTimestampIndicator(product_start_time, "f");
                         modified_webhook_template.embeds[0]["fields"][1][
                             "value"
-                        ] = createTimestampIndicator(product_start_time, "f");
+                        ] = createTimestampIndicator(product_end_time, "R");
                         modified_webhook_template.embeds[0]["fields"][2][
                             "value"
-                        ] = createTimestampIndicator(product_end_time, "R");
+                        ] = String(product_json["bundles_sold|decimal"]);
                         modified_webhook_template.embeds[0].image.url =
                             product_json.high_res_tile_image;
                         modified_webhook_template.username = username;
@@ -134,13 +136,14 @@ function schedule() {
 
             const modified_webhook_template = webhook_template;
             modified_webhook_template.embeds[0].title = json.name;
+            modified_webhook_template.embeds[0].description = json.description;
             modified_webhook_template.embeds[0].url = json.url;
             modified_webhook_template.embeds[0]["fields"][0]["value"] =
-                "unknown";
-            modified_webhook_template.embeds[0]["fields"][1]["value"] =
                 createTimestampIndicator(json.offers.validFrom, "f");
-            modified_webhook_template.embeds[0]["fields"][2]["value"] =
+            modified_webhook_template.embeds[0]["fields"][1]["value"] =
                 createTimestampIndicator(json.offers.validThrough, "R");
+            modified_webhook_template.embeds[0]["fields"][2]["value"] =
+                "unknown";
             modified_webhook_template.embeds[0].image.url =
                 json.image.replaceAll("&amp;", "&");
             modified_webhook_template.username = env.CHOICE_USERNAME;
