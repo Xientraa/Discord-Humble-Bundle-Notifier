@@ -7,6 +7,8 @@ declare global {
             BOOK_BUNDLE_WEBHOOK_PATH: string;
             SOFTWARE_BUNDLE_USERNAME: string;
             SOFTWARE_BUNDLE_WEBHOOK_PATH: string;
+            CHOICE_USERNAME: string;
+            CHOICE_WEBHOOK_PATH: string;
         }
     }
 }

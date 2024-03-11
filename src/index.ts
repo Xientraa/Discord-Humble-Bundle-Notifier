@@ -1,4 +1,4 @@
-import { getActiveBundlesJSON } from "./bundles";
+import { getActiveBundlesJSON, getChoiceBundleJSON } from "./bundles";
 import { createTimestampIndicator } from "./discord";
 import { sendWebhook } from "./discord";
 import webhook_template from "./discord/webhook_template.json";
@@ -13,6 +13,41 @@ database.run(
     "CREATE TABLE bundles (href TEXT NOT NULL, start_date TEXT NOT NULL, end_date TEXT NOT NULL)",
     () => {},
 );
+
+function isBundleInDatabase(
+    product_url: string,
+    product_start_time: string,
+    product_end_time: string,
+): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+        database.get(
+            "SELECT * FROM bundles WHERE href=? AND start_date=? AND end_date=?",
+            [product_url, product_start_time, product_end_time],
+            (err, row) => {
+                if (err) {
+                    return reject(err);
+                }
+                resolve(row !== undefined);
+            },
+        );
+    });
+}
+
+function addBundleToDatabase(
+    product_url: string,
+    product_start_time: string,
+    product_end_time: string,
+): void {
+    database.run(
+        "INSERT INTO bundles VALUES(?, ?, ?)",
+        [product_url, product_start_time, product_end_time],
+        (err: Error) => {
+            if (err) {
+                console.error(err);
+            }
+        },
+    );
+}
 
 function schedule() {
     getActiveBundlesJSON().then((response) => {
@@ -36,20 +71,13 @@ function schedule() {
                 const product_start_time = product_json["start_date|datetime"];
                 const product_end_time = product_json["end_date|datetime"];
                 const product_url = product_json.product_url;
-                new Promise((resolve, reject) => {
-                    database.get(
-                        "SELECT * FROM bundles WHERE href=? AND start_date=? AND end_date=?",
-                        [product_url, product_start_time, product_end_time],
-                        (err, row) => {
-                            if (err) {
-                                return reject(err);
-                            }
-                            resolve(row);
-                        },
-                    );
-                })
-                    .then((row) => {
-                        if (row) {
+                isBundleInDatabase(
+                    product_url,
+                    product_start_time,
+                    product_end_time,
+                )
+                    .then((is_bundle_in_database) => {
+                        if (is_bundle_in_database) {
                             return;
                         }
 
@@ -72,18 +100,10 @@ function schedule() {
 
                         sendWebhook(webhook_path, modified_webhook_template)
                             .then(() => {
-                                database.run(
-                                    "INSERT INTO bundles VALUES(?, ?, ?)",
-                                    [
-                                        product_url,
-                                        product_start_time,
-                                        product_end_time,
-                                    ],
-                                    (err: Error) => {
-                                        if (err) {
-                                            console.error(err);
-                                        }
-                                    },
+                                addBundleToDatabase(
+                                    product_url,
+                                    product_start_time,
+                                    product_end_time,
                                 );
                             })
                             .catch((err) => {
@@ -95,6 +115,42 @@ function schedule() {
                     });
             }
         }
+    });
+
+    getChoiceBundleJSON().then((json) => {
+        isBundleInDatabase(
+            json.url,
+            json.offers.validFrom,
+            json.offers.validThrough,
+        ).then((is_bundle_in_database) => {
+            if (is_bundle_in_database) {
+                return;
+            }
+
+            const modified_webhook_template = webhook_template;
+            modified_webhook_template.embeds[0].title = json.name;
+            modified_webhook_template.embeds[0].url = json.url;
+            modified_webhook_template.embeds[0]["fields"][0]["value"] =
+                "unknown";
+            modified_webhook_template.embeds[0]["fields"][1]["value"] =
+                createTimestampIndicator(json.offers.validFrom, "f");
+            modified_webhook_template.embeds[0]["fields"][2]["value"] =
+                createTimestampIndicator(json.offers.validThrough, "R");
+            modified_webhook_template.embeds[0].image.url =
+                json.image.replaceAll("&amp;", "&");
+
+            sendWebhook(env.CHOICE_WEBHOOK_PATH, modified_webhook_template)
+                .then(() => {
+                    addBundleToDatabase(
+                        json.url,
+                        json.offers.validFrom,
+                        json.offers.validThrough,
+                    );
+                })
+                .catch((err) => {
+                    console.error(err);
+                });
+        });
     });
 }
 

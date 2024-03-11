@@ -50,6 +50,33 @@ interface LandingPageJSON {
     data: LandingPageJSON_Data;
 }
 
+interface Brand {
+    "@type": "Brand";
+    name: string;
+}
+
+interface Offers {
+    "@type": "AggregateOffer";
+    url: string;
+    availability: "http://schema.org/InStock";
+    validFrom: string;
+    validThrough: string;
+    lowPrice: string;
+    highPrice: string;
+    priceCurrency: string;
+}
+interface MembershipBundleJSON {
+    "@context": "https://schema.org/";
+    "@type": "Product";
+    name: string;
+    sku: string;
+    url: string;
+    description: string;
+    brand: Brand;
+    image: string;
+    offers: Offers;
+}
+
 export function getActiveBundlesJSON(): Promise<LandingPageJSON> {
     return new Promise((resolve, reject) => {
         https.get("https://www.humblebundle.com/bundles", (res) => {
@@ -76,6 +103,39 @@ export function getActiveBundlesJSON(): Promise<LandingPageJSON> {
                 }
 
                 resolve(JSON.parse(string_data));
+            });
+        });
+    });
+}
+
+export function getChoiceBundleJSON(): Promise<MembershipBundleJSON> {
+    return new Promise((resolve, reject) => {
+        https.get("https://www.humblebundle.com/membership", (res) => {
+            const data: Array<Uint8Array> = [];
+            res.on("data", (chunk) => {
+                data.push(chunk);
+            });
+
+            res.on("end", () => {
+                const dom = new JSDOM(
+                    Buffer.concat(data).toString().replaceAll(
+                        // Silence "Error: Could not parse CSS stylesheet"
+                        new RegExp("<style.*?>([^]*?)</style>", "g"),
+                        "",
+                    ),
+                );
+                const bundle_information_element =
+                    dom.window.document.querySelector(
+                        'script[type="application/ld+json"]',
+                    );
+                const bundle_information_string =
+                    bundle_information_element?.textContent;
+
+                if (typeof bundle_information_string === "string") {
+                    resolve(JSON.parse(bundle_information_string));
+                }
+
+                return reject();
             });
         });
     });
