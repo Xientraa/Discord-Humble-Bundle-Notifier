@@ -89,7 +89,11 @@ function schedule() {
                         modified_webhook_template.embeds[0].title =
                             product_json.tile_name;
                         modified_webhook_template.embeds[0].description =
-                            product_json.short_marketing_blurb;
+                            product_json.short_marketing_blurb.replaceAll(
+                                // Replaces invalid characters which are unable to be used by a discord webhook
+                                new RegExp("[^\\w\\d ]", "g"),
+                                "",
+                            );
                         modified_webhook_template.embeds[0].url =
                             "https://humblebundle.com" + product_url;
                         modified_webhook_template.embeds[0]["fields"][0][
