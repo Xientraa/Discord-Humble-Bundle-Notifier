@@ -1,0 +1,10 @@
+version: "3"
+services:
+  humble-bundle-notifier:
+    container_name: Humble-Bundle-Notifier
+    image: humble-bundle-notifier:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./database.sqlite:/home/node/database.sqlite
