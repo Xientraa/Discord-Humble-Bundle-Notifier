@@ -7,4 +7,4 @@ services:
     env_file:
       - .env
     volumes:
-      - ./database.sqlite:/home/node/database.sqlite
+      - ./database.sqlite:/app/database.sqlite
