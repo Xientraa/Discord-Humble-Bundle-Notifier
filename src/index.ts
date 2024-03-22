@@ -104,7 +104,7 @@ function schedule() {
                         ] = createTimestampIndicator(product_end_time, "R");
                         modified_webhook_template.embeds[0]["fields"][2][
                             "value"
-                        ] = String(product_json["bundles_sold|decimal"]);
+                        ] = String(product_json["bundles_sold|decimal"] || 0);
                         modified_webhook_template.embeds[0].image.url =
                             product_json.high_res_tile_image;
                         modified_webhook_template.username = username;

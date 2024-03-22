@@ -23,7 +23,7 @@ interface Product {
     "end_date|datetime": string;
     tile_short_name: string;
     tile_stamp: string;
-    "bundles_sold|decimal": number;
+    "bundles_sold|decimal": number | undefined;
     tile_name: string;
     short_marketing_blurb: string;
     tile_image_information: unknown;
