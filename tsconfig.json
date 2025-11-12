@@ -8,11 +8,12 @@
         "strict": true,
         "resolveJsonModule": true,
         "esModuleInterop": true,
-        "noEmit": true,
+        "noEmit": false,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noImplicitReturns": true,
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "outDir": "./dist"
     },
     "include": ["src/**/*.ts", "environment.d.ts"]
 }

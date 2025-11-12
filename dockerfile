@@ -1,9 +1,16 @@
-FROM node:20
+FROM node:20-alpine AS BUILD
+
 WORKDIR /app
-
-COPY package.json ./
+COPY . /app
 RUN npm install
+RUN npm run build
+RUN cp ./package*.json ./dist/
+WORKDIR /app/dist
+RUN npm install --omit=dev
 
-COPY . ./
+FROM node:20-alpine
+COPY --from=BUILD /app/dist ./app
+WORKDIR /app
+RUN touch database.sqlite logs.log
 
-CMD npm start
+CMD node index.js

@@ -1,11 +1,12 @@
 {
   "name": "humble-bundle-notifier",
-  "private": "true",
+  "version": "1.0.0",
   "scripts": {
     "start": "ts-node --files src/index.ts",
     "lint:eslint": "eslint --max-warnings=0 '{tests,src}/**/*.{ts,js}'",
     "lint:prettier": "prettier --check 'src/**/*.{js,ts}'",
     "lint": "npm run lint:eslint && npm run lint:prettier",
+    "build": "tsc -p .",
     "docker:build": "docker build -t humble-bundle-notifier ."
   },
   "devDependencies": {

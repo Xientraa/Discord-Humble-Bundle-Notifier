@@ -1,10 +1,13 @@
-version: "3"
 services:
   humble-bundle-notifier:
     container_name: Humble-Bundle-Notifier
     image: humble-bundle-notifier:latest
+    build:
+      context: .
+      dockerfile: dockerfile
     restart: unless-stopped
     env_file:
       - .env
     volumes:
       - ./database.sqlite:/app/database.sqlite
+      - ./logs.log:/app/logs.log
