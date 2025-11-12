@@ -10,6 +10,7 @@ declare global {
             CHOICE_USERNAME: string;
             CHOICE_WEBHOOK_PATH: string;
             TRIGGER_INTERVAL: number | undefined;
+            LOG_LEVEL: string | undefined;
         }
     }
 }
