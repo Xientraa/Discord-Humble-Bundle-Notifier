@@ -1,7 +1,7 @@
 services:
   humble-bundle-notifier:
     container_name: Humble-Bundle-Notifier
-    image: humble-bundle-notifier:latest
+    image: ghcr.io/xientraa/discord-humble-bundle-notifier:latest
     build:
       context: .
       dockerfile: dockerfile

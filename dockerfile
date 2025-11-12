@@ -14,3 +14,5 @@ WORKDIR /app
 RUN touch database.sqlite logs.log
 
 CMD node index.js
+
+LABEL org.opencontainers.image.source https://github.com/xientraa/discord-humble-bundle-notifier
